@@ -9,11 +9,11 @@ namespace pascal_compiler
     class CTokenValue : CToken
     {
         public CVariant value;
-        public CType type;
-        public CTokenValue(TokenType tt, CVariant value, CType type) : base(tt)
+       
+        public CTokenValue(TokenType tt, CVariant value) : base(tt)
         {
             this.value = value;
-            this.type = type;
+           
         }
         public override void Show()
         {
