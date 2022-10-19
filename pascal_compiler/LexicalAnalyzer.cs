@@ -94,7 +94,7 @@ namespace pascal_compiler
                 name = name.ToLower();
                 if (name == "false" || name == "true")
                 {
-                    curToken = new CTokenValue(TokenType.Value, new CBooleanVariant(name), new CTypeBoolean());
+                    curToken = new CTokenValue(TokenType.Value, new CBooleanVariant(name));
                     return curToken;
 
                 }
@@ -127,18 +127,18 @@ namespace pascal_compiler
                         ++i;
                     }
                     number = number.Replace('.', ',');
-                    curToken = new CTokenValue(TokenType.Value, new CRealVariant(number, IO), new CTypeReal());
+                    curToken = new CTokenValue(TokenType.Value, new CRealVariant(number, IO));
                 }
                 else
-                    curToken = new CTokenValue(TokenType.Value, new CIntVariant(number, IO), new CTypeInt());
+                    curToken = new CTokenValue(TokenType.Value, new CIntVariant(number, IO));
               
             }
             else if (s[0] == '\'' && s.Length <= 3 && s[s.Length-1] == '\'')
             
-                curToken = new CTokenValue(TokenType.Value, new CCharVariant(s), new CTypeChar());
+                curToken = new CTokenValue(TokenType.Value, new CCharVariant(s));
             else if (s[0] == '\"' && s[s.Length - 1] == '\"')
 
-                curToken = new CTokenValue(TokenType.Value, new CStringVariant(s, IO), new CTypeString());
+                curToken = new CTokenValue(TokenType.Value, new CStringVariant(s, IO));
 
             else if (s == "\0")
             
