@@ -6,43 +6,81 @@ using System.Threading.Tasks;
 
 namespace pascal_compiler
 {
-    public class IO_module
+     class IO_module
     {
-        List<string> list;
-        int position;
-        string filename;
+        internal string curLine;
+        internal  int curPosition;
+        internal char curLetter;
+        private StreamReader inputFile;
+        private StreamWriter outputFile;
+        internal  List<Error> errorsInLine;
+        private string filename;
         public IO_module(string filename)
         {
-            position = 0;
-            list = new List<string>();
-            this.filename = filename;
-            ReadText();
+           
+
+
+            inputFile = new StreamReader(filename);
+            outputFile = new StreamWriter("output.txt");
+            curPosition = -1;
+            curLine = "";
+            errorsInLine = new List<Error>();
+            GetNext();
         }
-        public string GetNext()
+        public void GetNext()
         {
-            if (position == list.Count) return "";
-            else
+
+            if ( curPosition == curLine.Length - 1)
             {
-                string s = list[position];
-                ++position;
-                return s;
+                if (errorsInLine != null)
+                {
+                    foreach (Error e in errorsInLine)
+                        if (e.position < 0)
+                            e.InputError(outputFile);
+                }
+                outputFile.WriteLine(curLine);
+                curLine = inputFile.ReadLine();
+                curPosition = -1;
+
+                if (errorsInLine != null)
+                {
+                    foreach (Error e in errorsInLine)
+                        if (e.position >= 0)
+                            e.InputError(outputFile);
+                    errorsInLine.Clear();
+                }
+                curLetter = '\0';
+            }
+            else 
+            {
+                curPosition++;
+                curLetter = curLine[curPosition];
+            }
+            if (curLine == null)
+            {
+                
+                inputFile.Close();
+                outputFile.Close();
             }
         }
 
-        private void WriteInList(string s)
+
+
+        internal string GetLetter()
         {
+           
             string str = "";
-            for (int i = 0; i < s.Length; i++)
-            {
-                switch (s[i])
+            while (curLine != null) {
+                switch (curLetter)
                 {
                     case ';':
-                    case '(': case ')':
+                   
+                    case ')':
                     case '{':
                     case '}':
-                    case '[': case ']':
-                    case '\'':
-                    case '\"':
+                    case '[':
+                    case ']':
+                    case '(':
                     case '.':
                     case ',':
                     case '/':
@@ -50,95 +88,134 @@ namespace pascal_compiler
                     case '+':
                     case '-':
                     case '=':
-                        {
-                            if (str != "") list.Add(str);
-                            str = "" + s[i];
-                            list.Add(str);
-                            str = "";
-                        }
-                        break;
-                    case ':':
-                        {
 
-                            if (str != "") list.Add(str);
-                            if (i < s.Length - 1 && s[i + 1] == '=')
-                            {
-                                list.Add(":="); i++;
-                            }
-                            else {
-                                list.Add(":"); 
-                            }
-                            str = "";
+                        if (str != "")
+                        
+                            return str;
+                        
+                        str = "" + curLetter;
+                        GetNext();
+                        return str;
+
+
+                   
+                        
+                    
+                    case '\"':
+
+                        if (str != "")
+                        
+                           return str;
+                        
+                        str = "" + curLetter; GetNext();
+                        while (curLine != null && curLetter != '\"')
+                        {
+                            str += curLetter; GetNext();
                         }
-                        break;
+                        if (curLine != null ) { str += curLetter; GetNext(); return str; }
+                         
+                            break;
+                    case '\'':
+
+                        if (str != "")
+                        
+                           return str;
+                        
+                        str = "" + curLetter; GetNext();
+                        while (curLine != null && curLetter != '\'')
+                        {
+                            str += curLetter; GetNext();
+                        }
+                        if (curLine != null ) { str += curLetter; GetNext(); return str; }
+                        
+
+                            break;
+                    case ':':
+
+                        if (str != "")
+                        
+                            return str;
+                        
+                        GetNext();
+                        if (curLine != null && curLetter == '=')
+                        {
+                            GetNext();
+                            return ":=";
+                        }
+
+                        else
+                            return ":";
+
+
+
+
                     case '<':
+                        if (str != "")   return str; 
+                        GetNext();
+                        if (curLine != null && curLetter == '=')
                         {
-                            if (str != "") list.Add(str);
-                            if (i < s.Length - 1 && s[i + 1] == '=')
-                            {
-                                list.Add("<="); i++;
-                            }
-                            else if (i < s.Length - 1 && s[i + 1] == '>')
-                            {
-                                list.Add("<>"); i++;
-                            }
-                            else
-                            {
-                                list.Add("<");
-                            }
-                            str = "";
+                            GetNext();
+                            return "<=";
                         }
-                        break;
+
+                        else if (curLine != null && curLetter == '>')
+                        {
+                            GetNext();
+                            return "<>";
+                        }
+                        else
+
+                            return "<";
+
+
+
+
                     case '>':
+                        if (str != "")
+                        
+                             return str;
+                        
+                        GetNext();
+                        if (curLine != null && curLetter == '=')
                         {
-                            if (str != "") list.Add(str);
-                            if (i < s.Length - 1 && s[i + 1] == '=')
-                            {
-                                list.Add(">="); i++;
-                            }
-                            
-                            else
-                            {
-                                list.Add(">");
-                            }
-                            str = "";
+                            GetNext();
+                            return ">=";
                         }
-                        break;
+
+                        else
+
+                            return ">";
+
+
+
+
                     case ' ':
+                    case '\0':
+                    case '\t':
+                    case '\n':
+                        if (str != "")
                         {
-                            if (str != "") list.Add(str); str = "";
+                            GetNext(); return str;
                         }
+                        GetNext();
+
+
+
                         break;
                     default:
-                           str += s[i];
-                        if (i == s.Length - 1 && str != "") list.Add(str);
+                        str += curLetter;
+                        GetNext();
                         break;
 
-                        
+                }
                 
-                }
-
-
-
             }
-        }
-        private void ReadText()
-        {
-            try
-            {
-                using (StreamReader f = new StreamReader(filename))
-                {
-                    string s;
-                    while ((s = f.ReadLine()) != null)  WriteInList(s);
+            if (curLine == null && str != "") return str;
+            return curLetter.ToString();
 
-                }
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine("Error:" + e.Message);
-                return;
-            }
 
         }
+        
+       
     }
 }
