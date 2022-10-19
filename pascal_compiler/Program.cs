@@ -14,14 +14,14 @@ namespace pascal_compiler {
 			
 			filename = Console.ReadLine();
 			IO_module module = new IO_module(filename);
-			string s = "";
-            while (true)
-            {
-				s = module.GetNext();
-				if (s != "") Console.WriteLine(s);
-				else break;
-            }
-			
+			LexicalAnalyzer la = new LexicalAnalyzer(module);
+			CToken token;
+			do
+			{
+				token = la.NextCToken();
+				if (token != null) token.Show();
+			}
+			while (token != null);
 
 		}
 	}
