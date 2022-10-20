@@ -25,7 +25,7 @@ namespace pascal_compiler
             curPosition = -1;
             curLine = "";
             errorsInLine = new List<Error>();
-            GetNext();
+            GetNext(); 
         }
         public void GetNext()
         {
@@ -69,10 +69,7 @@ namespace pascal_compiler
                 switch (curLetter)
                 {
                     case ';':
-                   
                     case ')':
-                    case '{':
-                    case '}':
                     case '[':
                     case ']':
                     case '(':
@@ -93,9 +90,20 @@ namespace pascal_compiler
                         return str;
 
 
-                   
-                        
-                    
+
+
+                    case '{':
+                        if (str != "")
+
+                            return str;
+
+                        str = "" + curLetter; GetNext();
+                        while (curLine != null && curLetter != '}')
+                        {
+                            str += curLetter; GetNext();
+                        }
+                        if (curLine != null) { str += curLetter; GetNext(); }
+                        break;
                     case '\"':
 
                         if (str != "")
