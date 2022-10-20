@@ -32,12 +32,7 @@ namespace pascal_compiler
 
             if ( curPosition == curLine.Length - 1)
             {
-                if (errorsInLine != null)
-                {
-                    foreach (Error e in errorsInLine)
-                        if (e.position < 0)
-                            e.InputError(outputFile);
-                }
+                
                 outputFile.WriteLine(curLine);
                 curLine = inputFile.ReadLine();
                 curPosition = -1;
