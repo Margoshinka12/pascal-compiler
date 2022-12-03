@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace pascal_compiler
 {
-    class CToken
+     class CVariant 
     {
-        public TokenType tt;
-        public CToken(TokenType tt)
+        public CVariant()
         {
-            this.tt = tt;
         }
         public virtual void Show()
         {

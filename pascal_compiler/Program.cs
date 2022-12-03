@@ -15,13 +15,22 @@ namespace pascal_compiler {
 			filename = Console.ReadLine();
 			IO_module module = new IO_module(filename);
 			LexicalAnalyzer la = new LexicalAnalyzer(module);
-			CToken token;
-			do
-			{
-				token = la.NextCToken();
-				if (token != null) token.Show();
-			}
-			while (token != null);
+			//CToken token;
+			//do
+			//{
+			//	token = la.NextCToken();
+			//	if (token != null) token.Show();
+			//}
+			//while (token != null);
+			SyntaxAnalyzer sa = new SyntaxAnalyzer(la);
+			sa.Program();
+			/*string s = ""; s = module.GetLetter();
+			while (s != "\0")
+            {
+                Console.WriteLine(s);
+				s = module.GetLetter();
+            }*/
+
 
 		}
 	}
