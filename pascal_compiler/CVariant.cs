@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace pascal_compiler
 {
-    class CTypeBoolean : CType
+    class CVariant
     {
-        public CTypeBoolean() { }
-        public override bool isDerivedTo(CType type)
+        public CVariant()
         {
-            return type is CTypeBoolean;
+        }
+        public virtual void Show()
+        {
+            Console.Write("");
         }
     }
 }

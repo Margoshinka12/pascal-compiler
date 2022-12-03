@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace pascal_compiler
-{
+namespace pascal_compiler { 
     class CBooleanVariant : CVariant
     {
         public bool value;

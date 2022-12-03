@@ -25,29 +25,22 @@ namespace pascal_compiler
             {12,"Неописанная переменная"},
             {13,"Ожидалось выражение логического типа"},
             {14,"Несоответствие типов"},
-            {15,"Неверный тип операндов"},
-            {16, "Нет закрывающего знака" }
+            {15,"Неверный тип операндов"}
           
         };
-        //public void output()
-        //{
-        //    Console.WriteLine(errors[code] + " code: " + code.ToString());
-        //}
         public int position;
-        public int code;
+        private int code;
         private string word;
         public Error(int position, int code)
         {
             this.position = position;
             this.code = code;
-            //output();
         }
         public Error(int position, int code, string word)
         {
             this.position = position;
             this.code = code;
             this.word = word;
-            //output();
         }
         public void InputError(StreamWriter outputFile)
         {
