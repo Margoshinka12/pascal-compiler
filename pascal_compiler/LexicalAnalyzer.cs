@@ -58,11 +58,13 @@ namespace pascal_compiler
         {"<>",39},
         {"writeln",40},
             {"[",39},
-        {"]",40}
+        {"]",40},
+            {"const",41},
+            {"in",42}
     };
 
 
-        IO_module IO;
+        public IO_module IO;
         public LexicalAnalyzer(IO_module IO)
         {
             this.IO = IO;
@@ -76,6 +78,7 @@ namespace pascal_compiler
         {
             CToken curToken;
             string s = IO.GetLetter();
+           
             int value;
             if (keyWords.TryGetValue(s, out value))
             {
@@ -91,6 +94,7 @@ namespace pascal_compiler
                     name += s[i].ToString();
                     ++i;
                 }
+                if(i<s.Length) IO.errorsInLine.Add(new Error(IO.curPosition + 1, 5));
                 name = name.ToLower();
                 if (name == "false" || name == "true")
                 {
@@ -103,7 +107,7 @@ namespace pascal_compiler
 
                 else
                     curToken = new CTokenIdentifier(TokenType.Identifier, name);
-                return curToken;
+                return curToken; 
 
             }
             else if (s[0] >= '0' && s[0] <= '9')
@@ -130,9 +134,12 @@ namespace pascal_compiler
                     curToken = new CTokenValue(TokenType.Value, new CRealVariant(number, IO));
                 }
                 else
+                {
                     curToken = new CTokenValue(TokenType.Value, new CIntVariant(number, IO));
-              
-            }
+                    if (i < s.Length) IO.errorsInLine.Add(new Error(IO.curPosition + 1, 5));
+                }
+
+                }
             else if (s[0] == '\'' && s.Length <= 3 && s[s.Length-1] == '\'')
             
                 curToken = new CTokenValue(TokenType.Value, new CCharVariant(s));
@@ -154,7 +161,7 @@ namespace pascal_compiler
             {
                 IO.errorsInLine.Add(new Error(IO.curPosition + 1, 5, s));
 
-                 curToken = new CToken(TokenType.Identifier);
+                 curToken = new CTokenIdentifier(TokenType.Identifier, s);
                 
                 
                
