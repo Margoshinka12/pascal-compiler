@@ -46,8 +46,19 @@ namespace pascal_compiler
                 }
                 curLetter = '\0';
             }
+            
             else 
             {
+                if (curPosition == -1)
+                
+                    if (errorsInLine != null)
+                    {
+                        foreach (Error e in errorsInLine)
+                                e.InputError(outputFile);
+                        errorsInLine.Clear();
+                    }
+                    
+                
                 curPosition++;
                 curLetter = curLine[curPosition];
             }
@@ -88,7 +99,7 @@ namespace pascal_compiler
                         str = "" + curLetter;
                         GetNext();
                         return str;
-
+                      
 
 
 
@@ -97,12 +108,16 @@ namespace pascal_compiler
 
                             return str;
 
-                        str = "" + curLetter; GetNext();
+                        str = ""; GetNext();
                         while (curLine != null && curLetter != '}')
                         {
-                            str += curLetter; GetNext();
+                            str += curLetter; GetNext(); 
                         }
-                        if (curLine != null) { str += curLetter; GetNext(); }
+                        if (curLetter == '}') str = "";
+                        
+                        if (curLine != null)  GetNext();
+                        if (str != "") return str;
+                        //else new Error(curPosition + 1, 5).InputError(outputFile); 
                         break;
                     case '\"':
 
